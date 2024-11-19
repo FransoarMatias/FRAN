@@ -1,0 +1,38 @@
+Reference:
+chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://www.oracle.com/a/otn/docs/enterprise-manager/ds-19c-rat-em.pdf
+
+Studies about Oracle RAT.
+# SPA QUICK CHECK
+Allows administrators to verify routine DBA tasks like optimizer statistics gathering, validation SQL Profiles, and init.ora parameter changes with a single click of a button.
+
+# SQL PERFORMANCE ANALYSER
+SQL provides fine-grain assessment of an environment change on SQL execution plans and statistics by running the SQL statements.
+Examples of usage for SPA include:
+Database upgrade, patches, and initialization parameter changes.
+Configuration changes to the operation system, hardware, or database.
+Schema changes such as adding new indexes, partitioning or materialized views.
+Validation optimizer statistics refresh or SQL tuning actions.
+Database consolidation to a single or Container database.
+
+# DATABASE REPLAY
+Example Database Replay workload capture is performed at the database server level and therefore can be used to assess the impact of any system change or use case in the database tier such as:
+WORKLOAD CAPTURE
+When workload capture is enabled, all external client requests directed to the Oracle server are stored into compact “capture” files on the database host file system while incurring negligible overhead. These files contain all relevant information about the call needed for replay such as SQL text, bind values, wall clock time, SCN, etc.
+WORKLOAD REPLAY
+Before performing workload replay, the system has the intended system change applied and the database restored to the point in time before the capture. Once replay is initiated, a special client program called the “replay client” replays the workload from the processed files.It submits calls to the database with the exact same load on the system as seen in the production environment.
+ANALYSIS AND REPORTING
+Basic performance comparison reports between replay and capture or other replays are provided and for advanced analysis AWR, ASH, and Replay Compare Period reports are available.
+
+# CONSOLIDATED DATABASE REPLAY
+A chosen database consolidation strategy can be validated using Consolidated Database Replay thereby minimizing its associated risk.
+Schema consolidation into a single database
+Database consolidation using Oracle Pluggable Databases
+Testing impact of enabling Resource Manager in a consolidated environment.
+
+# CAPACITY PLANNING WITH DATABASE REPLAY
+Oracle Real Application Testing was designed to capture and replay multitenant databases at root multitenant container database (CDB) level. This enhancement enables you to capture and replay workloads at the PDB level.
+
+# CAPACITY PLANNING WITH DATABASE REPLAY
+This method is useful in cases when you are deploying multiple instances of the same application such as a multi-tenant application, or adding a new geographical area to an existing application.
+# DATABASE CONSOLIDATION WORKBENCH
+The Database Consolidation Workbench also automates the entire database consolidation implementation process - saving DBAs the manual error-prone effort of consolidation. The different modes of consolidation are supported (RMAN, Data Pump, Cross Platform Transportable Tablespaces, Data Guard) in the Workbench enable IT administrators and DBAs to implement the chosen consolidation strategy with minimal downtime based on the business needs.
