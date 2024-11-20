@@ -14,10 +14,10 @@ provider "aws" {
 }
 
 resource "aws_instance" "app_server" {
-  ami           = "ami-05b40ce1c0e236ef2"
+  ami           = "ami-0423fca164888b941"
   instance_type = "t2.micro"
 
   tags = {
-    Name = "EC2_AWS_1"
+    Name = "REDHAT_EC2_01"
   }
 }
