@@ -16,7 +16,7 @@ provider "aws" {
 resource "aws_instance" "app_server" {
   ami           = "ami-0423fca164888b941"
   instance_type = "t2.micro"
-
+  key_name = "iac-ec2"
   tags = {
     Name = "REDHAT_EC2_01"
   }
