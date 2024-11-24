@@ -1,0 +1,10 @@
+- hosts: terraform-ansible
+  tasks:
+  - name: Instalando Python3 e VirtualEnv
+    apt:
+      pkg:
+        - python3
+        - virtualenv
+      update_cache: yes
+    become: yes
+    
