@@ -24,6 +24,11 @@ resource "aws_instance" "app_server" {
   #            nohup busybox httpd -f -p 8080 &
   #            EOF
   tags = {
-    Name = "SRV_UBUNTU_02"
+    Name = "SRV_DEV_01"
   }
+}
+
+resource "aws_key_pair" "chaveSSH" {
+  key_name = DEV
+  public_key = file("iac-dev.pub")
 }
