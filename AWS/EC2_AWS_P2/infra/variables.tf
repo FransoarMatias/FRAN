@@ -9,3 +9,7 @@ variable "chave" {
 variable "instancia" {
   type = string
 }
+
+variable "aim_instance" {
+  type = string
+}

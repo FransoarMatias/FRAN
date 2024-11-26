@@ -1,6 +1,7 @@
 module "aws-dev" {
   source = "../../infra"
   instancia = "t2.micro"
-  regiao_aws = "us-west-2"
+  regiao_aws = "sa-wast-1"
   chave = "iac-dev"
+  aim_instance = "ami-06dec7e27b4abea"
 }
