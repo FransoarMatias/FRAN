@@ -15,20 +15,14 @@ provider "aws" {
 
 resource "aws_instance" "app_server" {
   ami           = "ami-04dd23e62ed049936"
-  instance_type = "t2.micro"
-  key_name = "iac-ec2"
-  #user_data = <<-EOF
-  #            #!/bin/bash
-  #            cd /home/ubuntu
-  #            echo "<h1>Feito com Terraform</h1>" > index.html
-  #            nohup busybox httpd -f -p 8080 &
-  #            EOF
+  instance_type = var.instancia
+  key_name = var.chave
   tags = {
     Name = "SRV_DEV_01"
   }
 }
 
 resource "aws_key_pair" "chaveSSH" {
-  key_name = DEV
-  public_key = file("iac-dev.pub")
+  key_name = var.chave
+  public_key = file("${var.chave}.pub")
 }

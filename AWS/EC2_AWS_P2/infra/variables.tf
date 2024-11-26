@@ -1,4 +1,4 @@
-variable "regias_aws" {
+variable "regiao_aws" {
   type = string
 }
 
