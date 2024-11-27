@@ -18,7 +18,7 @@ resource "aws_instance" "app_server" {
   instance_type = var.instancia
   key_name = var.chave
   tags = {
-    Name = "SRV_DEV_01"
+    Name = var.name_db
   }
 }
 

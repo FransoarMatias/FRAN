@@ -13,3 +13,7 @@ variable "instancia" {
 variable "aim_instance" {
   type = string
 }
+
+variable "name_db" {
+  type = string
+}
