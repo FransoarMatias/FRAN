@@ -6,3 +6,7 @@ module "aws-dev" {
   aim_instance = "ami-06dec7e27b4abea7b"
   name_db = "SRV_DEV_01"
 }
+
+output "IP_EC2_DEV" {
+  value = module.aws-dev.IP_Publico
+}
