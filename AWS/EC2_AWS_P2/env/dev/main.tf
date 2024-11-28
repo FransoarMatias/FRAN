@@ -3,7 +3,7 @@ module "aws-dev" {
   instancia = "t2.micro"
   regiao_aws = "sa-east-1"
   chave = "iac-dev"
-  aim_instance = "ami-06dec7e27b4abea7b"
+  aim_instance = "ami-0f16d0d3ac759edfa"
   name_db = "SRV_DEV_01"
 }
 
