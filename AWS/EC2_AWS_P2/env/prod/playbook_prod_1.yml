@@ -12,12 +12,11 @@
       repo: https://github.com/alura-cursos/clientes-leo-api
       dest: /home/ubuntu/tcc
       version: master
+      force: yes
   - name: Instalando Dependencias com pip (Django e Django Rest)
     pip:
       virtualenv: /home/ubuntu/tcc/venv
-      name:
-        - django
-        - djangorestframework
+      requirements: /home/ubuntu/tcc/requirements.txt
   - name: Verifcar se o Projeto ja existe ou nao
     stat:
       path: /home/ubuntu/tcc/setup/settings.py
@@ -31,3 +30,7 @@
       regexp: 'ALLOWED_HOSTS'
       line: 'ALLOWED_HOSTS = ["*"]'
       backrefs: yes
+  - name: Configurando Banco de Dados
+    shell: '. /home/ubuntu/tcc/venv/bin/activate; python /home/ubuntu/tcc/manage.py migrate'
+  - name: Carregando Dados Iniciais
+    shell: '. /home/ubuntu/tcc/venv/bin/activate; python /home/ubuntu/tcc/manage.py loaddata clientes.json'
