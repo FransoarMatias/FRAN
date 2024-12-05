@@ -1,2 +1,2 @@
 [wordpress]
-52.67.18.8 ansible_user=ubuntu ansible_ssh_private_key_file='/home/fransoar/FRAN/AWS/IAC_ANSIBLE/SRV_DELTA_01/Ansible/iac-ansible.pem'
+18.231.193.171 ansible_user=ubuntu ansible_ssh_private_key_file='/home/fransoar/FRAN/AWS/IAC_ANSIBLE/SRV_DELTA_01/Ansible/iac-ansible.pem'
