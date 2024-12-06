@@ -62,3 +62,8 @@
         state: present
         login_unix_socket: /run/mysqld/mysqld.sock
       become: yes
+    - name: Copy the sample configuration file to wp-config.php
+      ansible.builtin.copy:
+        src: /srv/www/wordpress/wp-config-sample.php
+        dest: /srv/www/wordpress/wp-config.php
+      become: yes
