@@ -24,6 +24,7 @@
         - php-mysql
         - php-xml
         - php-zip
+        - python3-pymysql
         state: latest
         update_cache: yes
       become: yes
@@ -47,3 +48,17 @@
       become: yes
       notify:
         - Restart Apache
+    - name: Create a new database with name 'db_wordpress'
+      community.mysql.mysql_db:
+        name: db_wordpress
+        state: present
+        login_unix_socket: /run/mysqld/mysqld.sock
+      become: yes
+    - name: Create database user with name 'user_wordpress'
+      community.mysql.mysql_user:
+        name: user_wordpress
+        password: 12345
+        priv: 'db_wordpress.*:SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,ALTER'
+        state: present
+        login_unix_socket: /run/mysqld/mysqld.sock
+      become: yes
