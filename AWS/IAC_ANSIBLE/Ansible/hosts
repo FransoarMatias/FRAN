@@ -1,5 +1,5 @@
 [wordpress]
-15.228.167.254 ansible_user=ubuntu ansible_ssh_private_key_file='/home/fransoar/FRAN/AWS/IAC_ANSIBLE/Ansible/iac-ansible.pem'
+18.230.201.221 ansible_user=ubuntu ansible_ssh_private_key_file='/home/fransoar/FRAN/AWS/IAC_ANSIBLE/Ansible/iac-ansible.pem'
 
 [mysql]
-15.228.167.254 ansible_user=ubuntu ansible_ssh_private_key_file='/home/fransoar/FRAN/AWS/IAC_ANSIBLE/Ansible/iac-ansible.pem'
+18.231.227.235 ansible_user=ubuntu ansible_ssh_private_key_file='/home/fransoar/FRAN/AWS/IAC_ANSIBLE/Ansible/iac-ansible.pem'
