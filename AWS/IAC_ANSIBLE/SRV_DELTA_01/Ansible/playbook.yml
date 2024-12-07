@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: wordpress
   handlers:
     - name: Restart Apache
       service:
@@ -7,7 +7,7 @@
         state: restarted
       become: yes
   tasks:
-    - name: Instalando Dependencias
+    - name: Instalando Dependencias do Wordpress
       ansible.builtin.apt:
         pkg:
         - apache2
@@ -48,20 +48,6 @@
       become: yes
       notify:
         - Restart Apache
-    - name: Create a new database with name 'db_wordpress'
-      community.mysql.mysql_db:
-        name: db_wordpress
-        state: present
-        login_unix_socket: /run/mysqld/mysqld.sock
-      become: yes
-    - name: Create database user with name 'user_wordpress'
-      community.mysql.mysql_user:
-        name: user_wordpress
-        password: 12345
-        priv: 'db_wordpress.*:SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,ALTER'
-        state: present
-        login_unix_socket: /run/mysqld/mysqld.sock
-      become: yes
     - name: Copy the sample configuration file to wp-config.php
       ansible.builtin.copy:
         src: /srv/www/wordpress/wp-config-sample.php
@@ -93,4 +79,29 @@
       - { search_string: "define( 'SECURE_AUTH_SALT', 'put your unique phrase here' );", line: "define('SECURE_AUTH_SALT', ')D+|1X1a!qLYJUEs97;m9Mojq-T|bPDxIC=.bf5dtHblBo|3_~n*n`qVSz/)akx2');" }
       - { search_string: "define( 'LOGGED_IN_SALT',   'put your unique phrase here' );", line: "define('LOGGED_IN_SALT',   '`Z+]W,MG>zS37wGh_&SxFw0eMdVWLSgcbKpv%Qk_O#dy;;.SMgmn*vv}G.|ePYc)');" }
       - { search_string: "define( 'NONCE_SALT',       'put your unique phrase here' );", line: "define('NONCE_SALT',       ']Pu|Vm^HA~UvP7m^?ri+(NE*{Z{N4%W:_ZjSW--s[2gYtkz;bz~uwyk4G{J(|T.x');" }
+      become: yes
+
+- hosts: mysql
+  tasks:
+    - name: Instalando Dependencias do Banco de Dados
+      ansible.builtin.apt:
+        pkg:
+        - mysql-server
+        - python3-pymysql
+        state: latest
+        update_cache: yes
+      become: yes
+    - name: Create a new database with name 'db_wordpress'
+      community.mysql.mysql_db:
+        name: db_wordpress
+        state: present
+        login_unix_socket: /run/mysqld/mysqld.sock
+      become: yes
+    - name: Create database user with name 'user_wordpress'
+      community.mysql.mysql_user:
+        name: user_wordpress
+        password: 12345
+        priv: 'db_wordpress.*:SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,ALTER'
+        state: present
+        login_unix_socket: /run/mysqld/mysqld.sock
       become: yes
