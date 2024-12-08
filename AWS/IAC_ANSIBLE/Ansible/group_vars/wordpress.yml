@@ -1,0 +1,3 @@
+---
+wp_dir: '/srv/www/wordpress'
+db_ip: '18.231.227.235'

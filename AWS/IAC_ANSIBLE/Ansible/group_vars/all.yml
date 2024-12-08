@@ -1,0 +1,4 @@
+---
+wp_db_name: 'db_wordpress'
+wp_db_user: 'user_wordpress'
+wp_db_pass: '12345'
