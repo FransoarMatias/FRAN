@@ -1,0 +1,6 @@
+- hosts: srv_oracle
+  tasks:
+  - name: Criando Arquivo
+    copy: 
+      dest: /home/ec2-user/teste.txt
+      content: <h1>Teste do Ansible</h1>
