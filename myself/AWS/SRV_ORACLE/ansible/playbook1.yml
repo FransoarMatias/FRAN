@@ -1,4 +1,4 @@
-- hosts: srv_oracle
+- hosts: all
   tasks:
   - name: Criando Arquivo
     copy: 
