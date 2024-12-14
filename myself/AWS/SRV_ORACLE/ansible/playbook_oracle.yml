@@ -25,18 +25,6 @@
       ansible.builtin.debug:
         msg: "Download realizado com sucesso: {{ download_status.dest }}"
 
-    - name: Habilitar repositório para compat-openssl10
-      ansible.builtin.yum_repository:
-        name: "oracle-compat-openssl10"
-        description: "Repositório para compat-openssl10"
-        baseurl: "http://yum.oracle.com/repo/OracleLinux/OL8/baseos/latest/x86_64/"
-        enabled: yes
-        gpgcheck: no
-    - name: Instalar compat-openssl10
-      ansible.builtin.yum:
-        name: compat-openssl10
-        state: present
-
     - name: Instalar dependências necessárias
       ansible.builtin.yum:
         name:
