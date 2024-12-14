@@ -1,47 +1,72 @@
 ---
-- name: Install Oracle XE on Red Hat 9
-  hosts: srv_oracle
+- name: Playbook para instalar Oracle XE
+  hosts: all
   become: yes
-  gather_facts: yes
   tasks:
-    - name: Install dependencies
-      yum:
+    - name: Baixar Pre-Install do Oracle XE RPM
+      ansible.builtin.get_url:
+        url: "https://yum.oracle.com/repo/OracleLinux/OL8/appstream/x86_64/getPackage/oracle-database-preinstall-21c-1.0-1.el8.x86_64.rpm"
+        dest: "/tmp/oracle-database-preinstall-21c-1.0-1.el8.x86_64.rpm"
+        mode: '0644'
+      register: download_status
+
+    - name: Verificar se o download foi bem-sucedido
+      ansible.builtin.debug:
+        msg: "Download realizado com sucesso: {{ download_status.dest }}"
+
+    - name: Baixar o Oracle XE RPM
+      ansible.builtin.get_url:
+        url: "https://download.oracle.com/otn-pub/otn_software/db-express/oracle-database-xe-21c-1.0-1.ol8.x86_64.rpm"
+        dest: "/tmp/oracle-database-xe-21c-1.0-1.ol8.x86_64.rpm"
+        mode: '0644'
+      register: download_status
+
+    - name: Verificar se o download foi bem-sucedido
+      ansible.builtin.debug:
+        msg: "Download realizado com sucesso: {{ download_status.dest }}"
+
+    - name: Habilitar repositório para compat-openssl10
+      ansible.builtin.yum_repository:
+        name: "oracle-compat-openssl10"
+        description: "Repositório para compat-openssl10"
+        baseurl: "http://yum.oracle.com/repo/OracleLinux/OL8/baseos/latest/x86_64/"
+        enabled: yes
+        gpgcheck: no
+    - name: Instalar compat-openssl10
+      ansible.builtin.yum:
+        name: compat-openssl10
+        state: present
+
+    - name: Instalar dependências necessárias
+      ansible.builtin.yum:
         name:
-          - wget
+          - bc
+          - binutils
+          - glibc
+          - libaio
+          - libXrender
+          - libX11
+          - libXtst
           - gcc
-          - make
         state: present
 
-    - name: Download Oracle XE RPM package
-      get_url:
-        url: curl -o oracle-database-preinstall-21c-1.0-1.el7.x86_64.rpm https://yum.oracle.com/repo/OracleLinux/OL7/latest/x86_64/getPackage/oracle-database-preinstall-21c-1.0-1.el7.x86_64.rpm
-        dest: /tmp/oracle-database-xe-19c-1.0-1.x86_64.rpm
-        headers:
-          Cookie: "oraclelicense=accept-securebackup-cookie"
-      register: download_oracle_xe
-
-    - name: Install Oracle XE RPM
-      yum:
-        name: /tmp/oracle-database-xe-19c-1.0-1.x86_64.rpm
+    - name: Instalar o pacote de pré-requisitos do Oracle XE
+      ansible.builtin.yum:
+        name: "/tmp/oracle-database-preinstall-21c-1.0-1.el8.x86_64.rpm"
         state: present
-      when: download_oracle_xe.changed
 
-    - name: Configure Oracle XE database
-      command: /etc/init.d/oracledb_ORCLCDB configure
-      args:
-        creates: /etc/oratab
+    - name: Instalar o Oracle XE
+      ansible.builtin.command:
+        cmd: yum -y localinstall /tmp/oracle-database-xe-21c-1.0-1.ol8.x86_64.rpm
+        creates: /etc/init.d/oracle-xe-21c
 
-    - name: Ensure Oracle XE is running
-      service:
-        name: oracle-xe-19c
+    - name: Configurar o Oracle XE
+      ansible.builtin.command:
+        cmd: /etc/init.d/oracle-xe-21c configure
+        creates: /opt/oracle/product/21c/dbhomeXE/dbs
+
+    - name: Verificar se o serviço Oracle XE está em execução
+      ansible.builtin.service:
+        name: oracle-xe-21c
         state: started
         enabled: yes
-
-    - name: Set Oracle Environment Variables
-      lineinfile:
-        path: ~/.bash_profile
-        regexp: '^export\s+ORACLE_HOME'
-        line: 'export ORACLE_HOME=/opt/oracle/product/19c/dbhome_1'
-
-    - name: Reload the bash profile
-      shell: source ~/.bash_profile
