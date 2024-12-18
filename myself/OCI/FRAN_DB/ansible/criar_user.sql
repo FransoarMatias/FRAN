@@ -1,0 +1,5 @@
+--## Criar Usuario Nominal
+BEGIN
+    ADMIN.GERENCIAR_USUARIOS('F0033947');
+END;
+/
