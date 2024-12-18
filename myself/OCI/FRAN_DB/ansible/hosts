@@ -1,0 +1,6 @@
+[oracle_autonomous_db]
+adb.sa-saopaulo-1.oraclecloud.com ansible_port=1522 ansible_user=admin ansible_password="As(1!3#wEsqAwA1!qW8*aQ" ansible_connection=local
+
+[oracle_autonomous_db:vars]
+tns_alias=frandb_high
+wallet_path=/home/fransoar/wallet_oci

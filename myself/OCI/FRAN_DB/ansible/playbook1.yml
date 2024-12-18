@@ -1,0 +1,13 @@
+---
+- name: Executar comandos SQL no Oracle Autonomous Database
+  hosts: oracle_autonomous_db
+  gather_facts: no
+  vars:
+    db_user: "admin"
+    db_pass: "As(1!3#wEsqAwA1!qW8*aQ"
+    db_tns: "frandb_high"
+    sql_script_path: "/home/fransoar/FRAN/myself/OCI/FRAN_DB/ansible/script.sql"
+  tasks:
+    - name: Executar SQL via SQL*Plus
+      ansible.builtin.shell:
+        cmd: "sqlplus -S {{ db_user }}/{{ db_pass }}@{{ db_tns }} @{{ sql_script_path }}"
