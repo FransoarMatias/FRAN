@@ -1,73 +1,76 @@
 --## Procedure de Criação de Usuarios
-CREATE OR REPLACE PROCEDURE ADMIN.PC_CREATE_USER_NOMINAL(
-    p_username IN VARCHAR2 -- Nome do usuário como parâmetro de entrada
-)
-AUTHID DEFINER -- Executa com permissões do Owner
-IS
-    v_user_exists NUMBER; -- Verifica se o usuário existe
-    v_password    VARCHAR2(20); -- Armazena a senha gerada
-    v_sql         VARCHAR2(4000); -- Armazena os comandos SQL dinâmicos
+CREATE OR REPLACE PROCEDURE ADMIN.PC_CREATE_USER_NOMINAL (
+    p_user_name IN VARCHAR2
+) AUTHID DEFINER AS
+    v_password VARCHAR2(30);
+    v_user_exists NUMBER;
 
-    -- Função para gerar senha aleatória
-    FUNCTION gerar_senha RETURN VARCHAR2 IS
-        v_chars CONSTANT VARCHAR2(200) := 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789#*!';
-        v_result VARCHAR2(200) := ''; -- Inicializa com vazio
+    FUNCTION generate_simple_password RETURN VARCHAR2 IS
+        v_random_password VARCHAR2(30);
+        v_digit1 VARCHAR2(1);
+        v_digit2 VARCHAR2(1);
+        v_digit3 VARCHAR2(1);
+        v_digit4 VARCHAR2(1);
     BEGIN
-        FOR i IN 1..10 LOOP
-            v_result := v_result || SUBSTR(v_chars, TRUNC(DBMS_RANDOM.VALUE(1, LENGTH(v_chars) + 1)), 1);
-        END LOOP;
-        RETURN v_result;
-    END gerar_senha;
+        -- Generate random digits between 1 and 9
+        SELECT TO_CHAR(TRUNC(DBMS_RANDOM.VALUE(1, 10))) INTO v_digit1 FROM dual;
+        SELECT TO_CHAR(TRUNC(DBMS_RANDOM.VALUE(1, 10))) INTO v_digit2 FROM dual;
+        SELECT TO_CHAR(TRUNC(DBMS_RANDOM.VALUE(1, 10))) INTO v_digit3 FROM dual;
+        SELECT TO_CHAR(TRUNC(DBMS_RANDOM.VALUE(1, 10))) INTO v_digit4 FROM dual;
+
+        v_random_password := 'PassExpire#' || 
+                             DBMS_RANDOM.STRING('A', 2) ||  -- 2 uppercase letters
+                             v_digit1 || v_digit2 ||        -- 2 digits
+                             DBMS_RANDOM.STRING('a', 2) ||  -- 2 lowercase letters
+                             DBMS_RANDOM.STRING('X', 2) ||  -- 2 special characters
+                             DBMS_RANDOM.STRING('A', 2) ||  -- 2 uppercase letters
+                             DBMS_RANDOM.STRING('a', 2) ||  -- 2 lowercase letters
+                             v_digit3 || v_digit4;          -- 2 digits
+        RETURN v_random_password;
+    END generate_simple_password;
 
 BEGIN
-    -- Depuração inicial
-    DBMS_OUTPUT.PUT_LINE('Iniciando a execução da procedure.');
+    -- Generate a simple password
+    v_password := generate_simple_password();
+    -- Check if the user already exists
+    SELECT COUNT(*)
+    INTO v_user_exists
+    FROM dba_users
+    WHERE username = UPPER(p_user_name);
 
-    -- Verifica se o usuário já existe
-    SELECT COUNT(*) INTO v_user_exists FROM dba_users WHERE username = UPPER(p_username);
+    IF v_user_exists = 0 THEN
+        -- Log the action for user creation
+        DBMS_OUTPUT.PUT_LINE('Creating user: ' || p_user_name);
 
-    IF v_user_exists > 0 THEN
-        -- Usuário já existe: Altera senha e permissões
-        v_password := gerar_senha;
-        DBMS_OUTPUT.PUT_LINE('Senha gerada para alteração: ' || v_password);
+        -- Create the user with the specified password and password expiry
+        EXECUTE IMMEDIATE 'CREATE USER ' || p_user_name ||
+                          ' IDENTIFIED BY "' || v_password ||
+                          '" PASSWORD EXPIRE PROFILE PF_COLABORADOR';
 
-        v_sql := 'ALTER USER ' || UPPER(p_username) || ' IDENTIFIED BY "' || v_password || '" PASSWORD EXPIRE';
-        DBMS_OUTPUT.PUT_LINE('Comando ALTER USER: ' || v_sql);
-        EXECUTE IMMEDIATE v_sql;
+        -- Grant role to the user
+        EXECUTE IMMEDIATE 'GRANT RO_ANALISTA TO ' || p_user_name;
 
-        v_sql := 'GRANT RO_ANALISTA TO ' || UPPER(p_username);
-        DBMS_OUTPUT.PUT_LINE('Comando GRANT: ' || v_sql);
-        EXECUTE IMMEDIATE v_sql;
-
-        DBMS_OUTPUT.PUT_LINE('==============');
-        DBMS_OUTPUT.PUT_LINE('User: ' || UPPER(p_username));
-        DBMS_OUTPUT.PUT_LINE('Pass: ' || v_password);
-        DBMS_OUTPUT.PUT_LINE('OBS: No primeiro login irá pedir para alterar a senha.');
-
+        -- Log success
+        DBMS_OUTPUT.PUT_LINE('User ' || p_user_name || ' created successfully.');
+        DBMS_OUTPUT.PUT_LINE('Password: ' || v_password);
+        DBMS_OUTPUT.PUT_LINE('OBS: No primeiro login ira pedir para alterar a senha.');
     ELSE
-        -- Usuário não existe: Cria usuário e configura permissões
-        v_password := gerar_senha;
-        DBMS_OUTPUT.PUT_LINE('Senha gerada para criação: ' || v_password);
+        -- Log the action for user modification
+        DBMS_OUTPUT.PUT_LINE('User already exists. Altering user: ' || p_user_name);
 
-        v_sql := 'CREATE USER ' || UPPER(p_username) || ' IDENTIFIED BY "' || v_password || '" PASSWORD EXPIRE PROFILE PF_COLABORADOR';
-        DBMS_OUTPUT.PUT_LINE('Comando CREATE USER: ' || v_sql);
-        EXECUTE IMMEDIATE v_sql;
+        -- Alter the user to reset the password and password expiry
+        EXECUTE IMMEDIATE 'ALTER USER ' || p_user_name ||
+                          ' IDENTIFIED BY "' || v_password ||
+                          '" PASSWORD EXPIRE';
 
-        v_sql := 'GRANT RO_ANALISTA TO ' || UPPER(p_username);
-        DBMS_OUTPUT.PUT_LINE('Comando GRANT: ' || v_sql);
-        EXECUTE IMMEDIATE v_sql;
-
-        DBMS_OUTPUT.PUT_LINE('==============');
-        DBMS_OUTPUT.PUT_LINE('User: ' || UPPER(p_username));
-        DBMS_OUTPUT.PUT_LINE('Pass: ' || v_password);
-        DBMS_OUTPUT.PUT_LINE('OBS: No primeiro login irá pedir para alterar a senha.');
+        -- Log success for alteration
+        DBMS_OUTPUT.PUT_LINE('User ' || p_user_name || ' password reset successfully.');
+        DBMS_OUTPUT.PUT_LINE('Password: ' || v_password);
+        DBMS_OUTPUT.PUT_LINE('OBS: No primeiro login ira pedir para alterar a senha.');
     END IF;
-
-    DBMS_OUTPUT.PUT_LINE('Execução concluída com sucesso.');
 EXCEPTION
     WHEN OTHERS THEN
-        -- Captura qualquer erro e exibe
-        DBMS_OUTPUT.PUT_LINE('Erro: ' || SQLERRM);
-        RAISE;
-END;
+        -- Log errors
+        DBMS_OUTPUT.PUT_LINE('Error processing user ' || p_user_name || ': ' || SQLERRM);
+END PC_CREATE_USER_NOMINAL;
 /

@@ -4,16 +4,16 @@
   tasks:
     - name: Copiar o script SQL para o host remoto
       ansible.builtin.copy:
-        src: /home/fransoar/FRAN/myself/OCI/FRAN_DB/ansible/Criar_estrutura.sql
-        dest: /tmp/Criar_estrutura.sql
+        src: /home/fransoar/FRAN/myself/OCI/FRAN_DB/ansible/criar_user.sql
+        dest: /tmp/criar_user.sql
 
     - name: Executar script SQL no banco de dados via sqlplus
       ansible.builtin.shell: |
-        sqlplus -S 'admin/As(1!3#wEsqAwA1!qW8*aQ'@{{ tns_alias }} @/tmp/Criar_estrutura.sql
+        sqlplus -S 'admin/As(1!3#wEsqAwA1!qW8*aQ'@{{ tns_alias }} @/tmp/criar_user.sql
       args:
         executable: /bin/bash
 
     - name: Remover o script SQL do host remoto
       ansible.builtin.file:
-        path: /tmp/Criar_estrutura.sql
+        path: /tmp/criar_user.sql
         state: absent
