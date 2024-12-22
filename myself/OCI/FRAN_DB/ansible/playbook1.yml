@@ -12,6 +12,11 @@
         sqlplus -S 'admin/As(1!3#wEsqAwA1!qW8*aQ'@{{ tns_alias }} @/tmp/criar_user.sql
       args:
         executable: /bin/bash
+      register: sql_output
+
+    - name: Mostrar o output do SQL
+      debug:
+        var: sql_output.stdout
 
     - name: Remover o script SQL do host remoto
       ansible.builtin.file:
