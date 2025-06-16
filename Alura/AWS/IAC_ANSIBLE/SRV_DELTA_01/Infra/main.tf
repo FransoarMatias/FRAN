@@ -14,7 +14,7 @@ provider "aws" {
 }
 
 resource "aws_instance" "app_server" {
-  ami           = "ami-05b58b5e0e35407e9" ## RedHat
+  ami           = "ami-0fe9bb1a9264e4983" ## RedHat 9
   instance_type = "t2.micro"
   key_name = "iac-ansible"
   tags = {
